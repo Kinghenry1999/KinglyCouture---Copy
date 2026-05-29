@@ -1,6 +1,7 @@
+// src/Pages/ProductDetail.jsx
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Spinner, Form, Alert, ListGroup } from "react-bootstrap";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import api from "../utility/Api";
 import { getFullImageUrl } from "../utility/imageUtils";
 import { useCart } from "../context/CartContext";
@@ -35,10 +36,7 @@ const ProductDetail = () => {
     };
     fetchProduct();
     fetchReviews();
-    // Check if user has a review
-    if (user) {
-      fetchUserReview();
-    }
+    if (user) fetchUserReview();
   }, [id, user]);
 
   const fetchReviews = async () => {
@@ -145,6 +143,13 @@ const ProductDetail = () => {
               {product.quantity > 0 ? `In Stock: ${product.quantity}` : "Out of Stock"}
             </p>
           )}
+          {/* Description */}
+          {product.description && (
+            <div className="mb-3">
+              <h5>Description</h5>
+              <p>{product.description}</p>
+            </div>
+          )}
           <div className="mb-3">
             <Button
               variant="primary"
@@ -185,8 +190,6 @@ const ProductDetail = () => {
               ))}
             </ListGroup>
           )}
-
-          {/* Write a review */}
           {user && user.role === 'user' ? (
             <Card className="mt-4">
               <Card.Body>

@@ -1,17 +1,17 @@
 // backend/models/Post.js
 import pool from "../config/db.js";
 
-export const createPost = async (name, price, imageUrl, category, featured, quantity, adminId) => {
+export const createPost = async (name, price, imageUrl, category, featured, quantity, description, adminId) => {
   const result = await pool.query(
-    "INSERT INTO posts (name, price, image_url, category, featured, quantity, admin_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-    [name, price, imageUrl, category, featured, quantity, adminId]
+    "INSERT INTO posts (name, price, image_url, category, featured, quantity, description, admin_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+    [name, price, imageUrl, category, featured, quantity, description, adminId]
   );
   return result.rows[0];
 };
 
 export const getAllPosts = async () => {
   const result = await pool.query(`
-    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.admin_id, p.created_at, p.updated_at,
+    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.description, p.admin_id, p.created_at, p.updated_at,
            COALESCE(ROUND(AVG(r.rating), 1), 0) as average_rating,
            COUNT(r.id) as review_count
     FROM posts p
@@ -24,7 +24,7 @@ export const getAllPosts = async () => {
 
 export const getFeaturedPosts = async (limit = 20) => {
   const result = await pool.query(`
-    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.admin_id, p.created_at, p.updated_at,
+    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.description, p.admin_id, p.created_at, p.updated_at,
            COALESCE(ROUND(AVG(r.rating), 1), 0) as average_rating,
            COUNT(r.id) as review_count
     FROM posts p
@@ -39,7 +39,7 @@ export const getFeaturedPosts = async (limit = 20) => {
 
 export const getPostsByCategory = async (category) => {
   const result = await pool.query(`
-    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.admin_id, p.created_at, p.updated_at,
+    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.description, p.admin_id, p.created_at, p.updated_at,
            COALESCE(ROUND(AVG(r.rating), 1), 0) as average_rating,
            COUNT(r.id) as review_count
     FROM posts p
@@ -53,7 +53,7 @@ export const getPostsByCategory = async (category) => {
 
 export const getPostById = async (id) => {
   const result = await pool.query(`
-    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.admin_id, p.created_at, p.updated_at,
+    SELECT p.id, p.name, p.price, p.image_url AS image, p.category, p.featured, p.quantity, p.description, p.admin_id, p.created_at, p.updated_at,
            COALESCE(ROUND(AVG(r.rating), 1), 0) as average_rating,
            COUNT(r.id) as review_count
     FROM posts p
@@ -64,10 +64,10 @@ export const getPostById = async (id) => {
   return result.rows[0];
 };
 
-export const updatePost = async (id, name, price, image, category, featured, quantity) => {
+export const updatePost = async (id, name, price, image, category, featured, quantity, description) => {
   const result = await pool.query(
-    "UPDATE posts SET name = $1, price = $2, image_url = $3, category = $4, featured = $5, quantity = $6 WHERE id = $7 RETURNING *",
-    [name, price, image, category, featured, quantity, id]
+    "UPDATE posts SET name = $1, price = $2, image_url = $3, category = $4, featured = $5, quantity = $6, description = $7 WHERE id = $8 RETURNING *",
+    [name, price, image, category, featured, quantity, description, id]
   );
   return result.rows[0];
 };

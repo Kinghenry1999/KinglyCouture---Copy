@@ -40,7 +40,6 @@ const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [formErrors, setFormErrors] = useState({});
 
-  // ----- Fetch products (unchanged) -----
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -63,7 +62,6 @@ const Dashboard = () => {
     fetchProducts();
   }, []);
 
-  // ----- Filters (unchanged) -----
   useEffect(() => {
     let filtered = products;
     if (searchTerm.trim()) {
@@ -85,7 +83,6 @@ const Dashboard = () => {
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // ----- Modal helpers (unchanged) -----
   useEffect(() => {
     if (!showForm) {
       setImagePreview(null);
@@ -96,7 +93,6 @@ const Dashboard = () => {
     }
   }, [showForm, selectedProduct]);
 
-  // ----- File selection (unchanged) -----
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -104,13 +100,12 @@ const Dashboard = () => {
       const reader = new FileReader();
       reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
-      console.log('✅ File selected:', file.name);  // <-- DEBUG
+      console.log('✅ File selected:', file.name);
     } else {
       console.log('❌ No file selected');
     }
   };
 
-  // ----- Validation (unchanged) -----
   const validateForm = (form) => {
     const errors = {};
     if (!form.name.value.trim()) errors.name = "Name is required";
@@ -119,12 +114,9 @@ const Dashboard = () => {
     return errors;
   };
 
-  // ----- SUBMIT (debug added) -----
   const handleSave = async (e) => {
     e.preventDefault();
     const form = e.target;
-
-    // ----- VALIDATE FIRST -----
     const errors = validateForm(form);
     if (Object.keys(errors).length) {
       setFormErrors(errors);
@@ -132,22 +124,15 @@ const Dashboard = () => {
       return;
     }
 
-    // ----- BUILD FormData -----
     const formData = new FormData();
     formData.append('name', form.name.value);
     formData.append('price', form.price.value);
     formData.append('category', form.category.value);
     formData.append('featured', form.featured.checked);
+    formData.append('description', form.description.value);   // description added
     if (selectedFile) {
       formData.append('image', selectedFile);
       console.log('📎 Appending image:', selectedFile.name);
-    } else {
-      console.log('⚠️ No image file – selectedFile is null');
-    }
-
-    // ----- DEBUG: show FormData entries -----
-    for (const pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
     }
 
     try {
@@ -165,14 +150,12 @@ const Dashboard = () => {
       setShowForm(false);
       setSelectedProduct(null);
     } catch (err) {
-      // ----- Show REAL error from backend -----
       console.error("Upload error object:", err);
       const msg = err.response?.data?.message || err.message || "Operation failed";
       toast.error(msg);
     }
   };
 
-  // ----- Edit / Delete / Logout (unchanged) -----
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setShowForm(true);
@@ -201,7 +184,6 @@ const Dashboard = () => {
   const revenueTarget = 10000;
   const lowStockPercent = stats.totalProducts ? (stats.lowStock / stats.totalProducts) * 100 : 0;
 
-  // ----- Loading skeleton (unchanged) -----
   if (loading) {
     return (
       <div className="dashboard-container">
@@ -220,7 +202,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar (unchanged, but I include it for completeness) */}
       <div className={`dashboard-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <h3>{sidebarCollapsed ? "K" : "Admin Panel"}</h3>
@@ -237,10 +218,7 @@ const Dashboard = () => {
           <button className="sidebar-link logout-btn" onClick={handleLogout}><i className="bi bi-box-arrow-right"></i>{!sidebarCollapsed && <span>Logout</span>}</button>
         </div>
       </div>
-
       {!sidebarCollapsed && <div className="sidebar-overlay" onClick={() => setSidebarCollapsed(true)}></div>}
-
-      {/* Main Content */}
       <div className="dashboard-main">
         <div className="top-navbar">
           <div className="navbar-left">
@@ -262,33 +240,17 @@ const Dashboard = () => {
             <div className="admin-profile"><i className="bi bi-person-circle"></i><span>Admin</span></div>
           </div>
         </div>
-
         {activeTab === "products" ? (
           <>
-            {/* Stats Cards */}
             <div className="stats-grid">
               <div className="stat-card">
                 <i className="bi bi-box-seam"></i>
-                <div className="stat-info">
-                  <h5>Total Products</h5><h3>{stats.totalProducts}</h3>
-                  <div className="progress-bar-container"><div className="progress-bar" style={{ width: `${getProgressPercent(stats.totalProducts, productTarget)}%` }}></div></div>
-                </div>
+                <div className="stat-info"><h5>Total Products</h5><h3>{stats.totalProducts}</h3><div className="progress-bar-container"><div className="progress-bar" style={{ width: `${getProgressPercent(stats.totalProducts, productTarget)}%` }}></div></div></div>
               </div>
-              <div className="stat-card">
-                <i className="bi bi-cart-check"></i>
-                <div className="stat-info"><h5>Total Orders</h5><h3>{stats.totalOrders}</h3></div>
-              </div>
-              <div className="stat-card">
-                <i className="bi bi-currency-naira"></i>
-                <div className="stat-info"><h5>Total Revenue</h5><h3>{stats.totalRevenue}</h3></div>
-              </div>
-              <div className="stat-card">
-                <i className="bi bi-exclamation-triangle"></i>
-                <div className="stat-info"><h5>Low Stock</h5><h3>{stats.lowStock}</h3></div>
-              </div>
+              <div className="stat-card"><i className="bi bi-cart-check"></i><div className="stat-info"><h5>Total Orders</h5><h3>{stats.totalOrders}</h3></div></div>
+              <div className="stat-card"><i className="bi bi-currency-naira"></i><div className="stat-info"><h5>Total Revenue</h5><h3>{stats.totalRevenue}</h3></div></div>
+              <div className="stat-card"><i className="bi bi-exclamation-triangle"></i><div className="stat-info"><h5>Low Stock</h5><h3>{stats.lowStock}</h3></div></div>
             </div>
-
-            {/* Products Table */}
             <Card className="table-card">
               <Card.Header className="d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Products</h5>
@@ -297,9 +259,7 @@ const Dashboard = () => {
                     <option value="All">All Categories</option>
                     {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                   </select>
-                  <Button className="add-product-btn" onClick={() => { setSelectedProduct(null); setShowForm(true); }}>
-                    <i className="bi bi-plus-lg"></i> Add Product
-                  </Button>
+                  <Button className="add-product-btn" onClick={() => { setSelectedProduct(null); setShowForm(true); }}><i className="bi bi-plus-lg"></i> Add Product</Button>
                 </div>
               </Card.Header>
               <Card.Body>
@@ -328,7 +288,6 @@ const Dashboard = () => {
                     ))}
                   </tbody>
                 </Table>
-                {/* Pagination */}
                 {filteredProducts.length > 0 && (
                   <div className="table-footer">
                     <div className="pagination-info">Showing {indexOfFirstItem+1}–{Math.min(indexOfLastItem, filteredProducts.length)} of {filteredProducts.length}</div>
@@ -343,8 +302,6 @@ const Dashboard = () => {
                 )}
               </Card.Body>
             </Card>
-
-            {/* Product Modal */}
             <Modal show={showForm} onHide={() => setShowForm(false)} size="lg" centered>
               <Modal.Header closeButton>
                 <Modal.Title>{selectedProduct ? "Edit Product" : "Add Product"}</Modal.Title>
@@ -388,6 +345,16 @@ const Dashboard = () => {
                       </Form.Group>
                     </Col>
                   </Row>
+                  {/* Description field */}
+                  <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      name="description"
+                      defaultValue={selectedProduct?.description || ''}
+                    />
+                  </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>

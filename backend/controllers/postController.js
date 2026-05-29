@@ -1,3 +1,4 @@
+// backend/controllers/postController.js
 import * as Post from "../models/Post.js";
 
 export const getAllPosts = async (req, res, next) => {
@@ -44,16 +45,14 @@ export const getPost = async (req, res, next) => {
 
 export const createPost = async (req, res, next) => {
   try {
-    const { name, price, category, featured, quantity } = req.body;
+    const { name, price, category, featured, quantity, description } = req.body;
     const file = req.file;
 
     if (!name || !price || !category || !file) {
       return res.status(400).json({ message: "Name, price, category, and image are required" });
     }
 
-    // ✅ Cloudinary direct URL
     const imageUrl = req.file.path;
-
     const isFeatured = featured === 'true' || featured === true;
     if (isFeatured) {
       const featuredCount = await Post.countFeaturedPosts();
@@ -69,13 +68,12 @@ export const createPost = async (req, res, next) => {
       category,
       isFeatured,
       quantity || 0,
+      description || null,
       req.user.id
     );
 
-    // Transform to send 'image' field
     const responsePost = { ...newPost, image: newPost.image_url };
     delete responsePost.image_url;
-
     res.status(201).json(responsePost);
   } catch (error) {
     next(error);
@@ -85,7 +83,7 @@ export const createPost = async (req, res, next) => {
 export const updatePost = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, price, category, featured, quantity } = req.body;
+    const { name, price, category, featured, quantity, description } = req.body;
     const file = req.file;
 
     if (!name || !price || !category) {
@@ -97,10 +95,9 @@ export const updatePost = async (req, res, next) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    // Keep old image if no new file uploaded
     let imageUrl = currentPost.image;
     if (file) {
-      imageUrl = req.file.path;   // Cloudinary URL
+      imageUrl = req.file.path;
     }
 
     const newFeatured = featured === 'true' || featured === true;
@@ -118,12 +115,12 @@ export const updatePost = async (req, res, next) => {
       imageUrl,
       category,
       newFeatured,
-      quantity !== undefined ? quantity : currentPost.quantity
+      quantity !== undefined ? quantity : currentPost.quantity,
+      description !== undefined ? description : currentPost.description
     );
 
     const responsePost = { ...updated, image: updated.image_url };
     delete responsePost.image_url;
-
     res.json(responsePost);
   } catch (error) {
     next(error);
