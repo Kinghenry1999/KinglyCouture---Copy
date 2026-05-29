@@ -1,0 +1,215 @@
+/* ================= Register Page Styles ================= */
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+/* Animated background blobs (same as login) */
+.register-container::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  top: -100px;
+  left: -100px;
+  animation: float 20s infinite ease-in-out;
+}
+
+.register-container::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  bottom: -150px;
+  right: -150px;
+  animation: float 25s infinite reverse;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 30px) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Register Card */
+.register-card {
+  width: 100%;
+  max-width: 550px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transform: translateY(0);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.register-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.register-card .card-body {
+  padding: 2rem;
+}
+
+.register-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Form Controls */
+.register-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.register-form .form-label {
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.register-form .form-control {
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.register-form .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+/* Helper text for admin key */
+.form-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Register Button */
+.register-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 16px;
+  padding: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(102, 126, 234, 0.4);
+}
+
+.register-btn:active {
+  transform: translateY(0);
+}
+
+.register-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+}
+
+.register-btn:active::after {
+  width: 200%;
+  height: 200%;
+}
+
+/* Alerts */
+.register-alert {
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  border: none;
+  padding: 0.75rem 1rem;
+}
+
+.register-alert.danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.register-alert.success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Link */
+.register-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #6b7280;
+}
+
+.register-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.register-link a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+/* Spinner */
+.register-spinner {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 0.15rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .register-card .card-body {
+    padding: 1.5rem;
+  }
+  .register-title {
+    font-size: 1.75rem;
+  }
+}
